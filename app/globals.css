@@ -1,17 +1,74 @@
 @import "tailwindcss";
 
-/* Ye line Tailwind ko batati hai ke ".dark" class dhoondo */
-@theme {
-  --variant-dark: .dark &;
-}
-
+/* Manual toggle: next-themes sets class "dark" on <html>; Tailwind v4 defaults to prefers-color-scheme only */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Global Transitions taake switch smooth ho */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+/* Tailwind v4 optimized sources */
+@source "../app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../components/**/*.{js,ts,jsx,tsx,mdx}";
+
+@theme {
+  --color-brand-blue: #0058be;
+  --color-dark-card: #1c1f2a;
 }
 
-body {
-  @apply bg-white text-slate-900 dark:bg-[#020617] dark:text-[#e1e2ec];
+/* Base Styles */
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --nav-bg: rgba(255, 255, 255, 0.8);
+    --border: #e2e8f0;
+  }
+
+  /* Support both class-based and attribute-based dark mode from next-themes */
+  .dark, 
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --background: #0a0b10;
+    --foreground: #f8fafc;
+    --nav-bg: rgba(2, 6, 23, 0.8);
+    --border: #1e293b;
+  }
+
+  html {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    /* Ensure variables update and apply even if high-specificity resets exist */
+    background-color: var(--background) !important;
+    background-color: var(--background);
+    color: var(--foreground);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+}
+
+/* Grid Pattern Fix (Dark mode aesthetic) */
+.dark body,
+[data-theme='dark'] body {
+  background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 44px 44px;
+}
+
+/* Navbar specific force-fix */
+nav {
+  background-color: var(--nav-bg) !important;
+  border-color: var(--border) !important;
+}
+
+/* Vertical Text Fix */
+.result-text {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  word-break: normal;
 }

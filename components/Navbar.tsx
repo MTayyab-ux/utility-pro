@@ -3,15 +3,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from "next-themes";
 import { useEffect, useState, useRef } from "react";
+import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Mounted check to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
     const handleClickOutside = (event: MouseEvent) => {
@@ -23,6 +26,11 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setActiveDropdown(null);
+  }, [pathname]);
+
   if (!mounted) return null;
 
   const linkStyle = (path: string) => {
@@ -30,6 +38,13 @@ export default function Navbar() {
     return `text-sm font-medium transition-all relative py-2 ${
       isActive ? "text-blue-600" : "text-slate-600 dark:text-slate-400 hover:text-blue-600"
     }`;
+  };
+
+  const slugify = (text: string) => {
+    const slug = text.toLowerCase().replace(/\s+/g, '-').replace('calc', 'calculator');
+    if (slug === "ai-math-solver") return "/ai-math-solver";
+    if (slug === "ai-chat") return "/ai-chat";
+    return `/tool/${slug}`; 
   };
 
   const toolCategories = [
@@ -72,8 +87,63 @@ export default function Navbar() {
         </div>
       )}
 
-      <nav className="bg-white/80 dark:bg-[#020617]/80 backdrop-blur-xl sticky top-0 w-full z-50 border-b border-slate-200/50 dark:border-slate-800/50 transition-all">
-        <div className="flex justify-between items-center h-16 px-6 md:px-12 max-w-7xl mx-auto" ref={dropdownRef}>
+      {/* Mobile Drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[70] md:hidden">
+          <button
+            aria-label="Close menu"
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl border-l border-black/5 dark:border-white/10 shadow-2xl animate-in slide-in-from-right duration-200">
+            <div className="flex items-center justify-between px-5 h-16 border-b border-black/5 dark:border-white/10">
+              <Link href="/" className="text-lg font-bold text-slate-900 dark:text-white tracking-tighter">
+                UtilityPro
+              </Link>
+              <button
+                className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close"
+              >
+                <X className="w-5 h-5 text-slate-700 dark:text-slate-200" />
+              </button>
+            </div>
+
+            <div className="p-5 flex flex-col gap-2">
+              <Link href="/" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                Home
+              </Link>
+              <Link href="/ai-chat" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                AI Chat
+              </Link>
+              <Link href="/ai-math-solver" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                AI Math Solver
+              </Link>
+              <Link href="/pricing-page" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                Pricing
+              </Link>
+
+              <div className="mt-3 pt-3 border-t border-black/5 dark:border-white/10 flex items-center gap-2">
+                <button
+                  onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                  className="min-h-[44px] flex-1 rounded-xl px-4 bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-100 hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
+                >
+                  Toggle theme
+                </button>
+                <Link href="/sign-in" className="flex-1">
+                  <button className="w-full min-h-[44px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors active:scale-[0.99]">
+                    Sign In
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <nav className="sticky top-0 w-full z-50 border-b border-slate-200/50 dark:border-white/5 transition-colors">
+
+        <div className="flex justify-between items-center h-16 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto" ref={dropdownRef}>
           
           <div className="flex items-center gap-10">
             <Link href="/" className="text-xl font-bold text-slate-900 dark:text-white tracking-tighter">
@@ -111,7 +181,15 @@ export default function Navbar() {
                         </p>
                         <ul className="space-y-2">
                           {cat.links.map((l, j) => (
-                            <li key={j} className="text-xs text-slate-600 dark:text-slate-400 hover:text-blue-600 cursor-pointer transition-colors">{l}</li>
+                            <li key={j}>
+                              <Link 
+                                href={slugify(l)}
+                                onClick={() => setActiveDropdown(null)}
+                                className="text-xs text-slate-600 dark:text-slate-400 hover:text-blue-600 cursor-pointer transition-colors"
+                              >
+                                {l}
+                              </Link>
+                            </li>
                           ))}
                         </ul>
                       </div>
@@ -143,21 +221,19 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Search Button */}
             <button onClick={() => setIsSearchOpen(true)} className="p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
               <span className="material-symbols-outlined text-[22px]">search</span>
             </button>
 
-            {/* Pricing Link */}
             <Link 
               href="/pricing-page" 
-              className={`${linkStyle("/pricing-page")} hidden sm:block px-2`}
+              className={`${linkStyle("/pricing-page")} hidden md:block px-2`}
             >
               Pricing
             </Link>
 
             {/* Language Dropdown */}
-            <div className="relative">
+            <div className="relative hidden md:block">
               <button 
                 onClick={() => setActiveDropdown(activeDropdown === 'lang' ? null : 'lang')}
                 className="flex items-center gap-1 text-[13px] font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-white/5 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition-all"
@@ -173,17 +249,31 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Theme Toggle */}
-            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-slate-600 dark:text-slate-400">
-              <span className="material-symbols-outlined text-[20px]">{theme === "dark" ? "light_mode" : "dark_mode"}</span>
+            {/* Theme Toggle - BUILT FOR RELIABILITY */}
+            <button 
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} 
+              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-slate-600 dark:text-slate-400"
+              aria-label="Toggle Dark Mode"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                {resolvedTheme === "dark" ? "light_mode" : "dark_mode"}
+              </span>
             </button>
 
-            {/* Sign In - Updated for Navigation */}
-            <Link href="/sign-in">
+            <Link href="/sign-in" className="hidden md:block">
               <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-6 py-2.5 rounded-full transition-all shadow-lg shadow-blue-600/20 active:scale-95">
                 Sign In
               </button>
             </Link>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-700 dark:text-slate-200"
+              aria-label="Open menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </nav>
