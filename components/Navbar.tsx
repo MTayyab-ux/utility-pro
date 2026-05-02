@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from "next-themes";
 import { useEffect, useState, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, MoonStar, X } from "lucide-react";
 
 export default function Navbar() {
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -95,9 +95,9 @@ export default function Navbar() {
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <div className="absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white/70 dark:bg-[#0f172a]/70 backdrop-blur-xl border-l border-black/5 dark:border-white/10 shadow-2xl animate-in slide-in-from-right duration-200">
-            <div className="flex items-center justify-between px-5 h-16 border-b border-black/5 dark:border-white/10">
-              <Link href="/" className="text-lg font-bold text-slate-900 dark:text-white tracking-tighter">
+          <div className="absolute right-0 top-0 h-full w-[86%] max-w-sm bg-white/80 dark:bg-black/80 backdrop-blur-xl border-l border-black/10 dark:border-white/10 shadow-2xl animate-in slide-in-from-right duration-200">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-black/10 dark:border-white/10">
+              <Link href="/" className="text-2xl font-bold text-slate-900 dark:text-white tracking-tighter">
                 UtilityPro
               </Link>
               <button
@@ -109,28 +109,31 @@ export default function Navbar() {
               </button>
             </div>
 
-            <div className="p-5 flex flex-col gap-2">
-              <Link href="/" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
-                Home
-              </Link>
-              <Link href="/ai-chat" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
-                AI Chat
-              </Link>
-              <Link href="/ai-math-solver" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
-                AI Math Solver
-              </Link>
-              <Link href="/pricing-page" className="min-h-[44px] rounded-xl px-4 flex items-center text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
-                Pricing
-              </Link>
+            <div className="px-6 py-8 h-[calc(100%-81px)] overflow-y-auto flex flex-col">
+              <div className="space-y-6">
+                <Link href="/" className="min-h-[44px] rounded-xl px-3 flex items-center text-lg font-medium text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                  Home
+                </Link>
+                <Link href="/ai-chat" className="min-h-[44px] rounded-xl px-3 flex items-center text-lg font-medium text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                  AI Chat
+                </Link>
+                <Link href="/ai-math-solver" className="min-h-[44px] rounded-xl px-3 flex items-center text-lg font-medium text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                  AI Math Solver
+                </Link>
+                <Link href="/pricing-page" className="min-h-[44px] rounded-xl px-3 flex items-center text-lg font-medium text-slate-800 dark:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10">
+                  Pricing
+                </Link>
+              </div>
 
-              <div className="mt-3 pt-3 border-t border-black/5 dark:border-white/10 flex items-center gap-2">
+              <div className="mt-8 pt-6 border-t border-white/10 dark:border-white/10 space-y-3">
                 <button
                   onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                  className="min-h-[44px] flex-1 rounded-xl px-4 bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-100 hover:bg-black/10 dark:hover:bg-white/15 transition-colors"
+                  className="w-full min-h-[44px] rounded-xl px-4 bg-black/5 dark:bg-white/10 text-slate-800 dark:text-slate-100 hover:bg-black/10 dark:hover:bg-white/15 transition-colors flex items-center justify-center gap-3 text-base font-medium"
                 >
+                  <MoonStar className="w-4 h-4" />
                   Toggle theme
                 </button>
-                <Link href="/sign-in" className="flex-1">
+                <Link href="/sign-in" className="block w-full">
                   <button className="w-full min-h-[44px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors active:scale-[0.99]">
                     Sign In
                   </button>

@@ -3,14 +3,22 @@ import { useEffect, useState } from 'react';
 import { LucideInfo } from 'lucide-react';
 import { calculateBySlug, PENDING_RESULT } from "../src/lib/calculations";
 import type { ToolConfig } from "../src/lib/tools-data";
+import type { LoanVisualData } from "../src/lib/calculations";
+import BMIScale from "./BMIScale";
+import LoanChart from "./LoanChart";
 
 export default function UniversalTool({ config, slug }: { config: ToolConfig; slug: string }) {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [result, setResult] = useState("");
+  const [numericResult, setNumericResult] = useState<number | undefined>(undefined);
+  const [loanVisualData, setLoanVisualData] = useState<LoanVisualData | undefined>(undefined);
   const [showPulse, setShowPulse] = useState(false);
 
   const handleCalculate = () => {
-    setResult(calculateBySlug(slug, formData));
+    const calcResult = calculateBySlug(slug, formData);
+    setResult(calcResult.display);
+    setNumericResult(calcResult.numericValue);
+    setLoanVisualData(calcResult.loanData);
   };
 
   const handleInputChange = (fieldId: string, value: string) => {
@@ -58,11 +66,20 @@ export default function UniversalTool({ config, slug }: { config: ToolConfig; sl
     return `Your latest result is ${result}. Update any parameter to instantly see revised outputs and insights.`;
   };
 
-  const getBmiPointerPosition = () => {
-    const bmiValue = Number(result);
-    if (!Number.isFinite(bmiValue)) return 0;
-    const bounded = Math.min(Math.max(bmiValue, 10), 40);
-    return ((bounded - 10) / (40 - 10)) * 100;
+  const renderVisuals = () => {
+    if (slug === "bmi-calculator") {
+      return <BMIScale value={numericResult} />;
+    }
+
+    if (slug === "loan-calculator") {
+      return <LoanChart data={loanVisualData} />;
+    }
+
+    return (
+      <div className="text-sm text-slate-600 dark:text-slate-300">
+        Visual insights for this tool will appear here when chart data is available.
+      </div>
+    );
   };
 
   const renderField = (field: any) => {
@@ -172,36 +189,7 @@ export default function UniversalTool({ config, slug }: { config: ToolConfig; sl
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6 mt-5 lg:mt-6">
         <div className="lg:col-span-2 bg-white/60 dark:bg-slate-900/40 backdrop-blur-md border border-black/5 dark:border-white/10 rounded-2xl p-5 lg:p-6">
           <p className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Visual Insights</p>
-          {slug === "bmi-calculator" ? (
-            <div className="space-y-3">
-              <div className="h-3 rounded-full overflow-hidden bg-slate-200/70 dark:bg-white/10 flex">
-                <div className="w-[28%] bg-sky-400/80" />
-                <div className="w-[24%] bg-emerald-400/80" />
-                <div className="w-[24%] bg-amber-400/80" />
-                <div className="w-[24%] bg-rose-400/80" />
-              </div>
-              <div className="relative h-6">
-                {result && result !== PENDING_RESULT && (
-                  <div
-                    className="absolute -top-1.5 -translate-x-1/2 transition-all duration-300"
-                    style={{ left: `${getBmiPointerPosition()}%` }}
-                  >
-                    <div className="w-3 h-3 rounded-full bg-blue-600 shadow-[0_0_0_4px_rgba(59,130,246,0.2)]" />
-                  </div>
-                )}
-              </div>
-              <div className="grid grid-cols-4 text-[11px] text-slate-600 dark:text-slate-300">
-                <span>Underweight</span>
-                <span>Healthy</span>
-                <span>Overweight</span>
-                <span>Obese</span>
-              </div>
-            </div>
-          ) : (
-            <div className="text-sm text-slate-600 dark:text-slate-300">
-              Visual insights for this tool will appear here when numeric ranges are configured.
-            </div>
-          )}
+          {renderVisuals()}
         </div>
 
         <div className="lg:col-span-1 bg-white/60 dark:bg-slate-900/40 backdrop-blur-md border border-black/5 dark:border-white/10 rounded-2xl p-5 lg:p-6">
