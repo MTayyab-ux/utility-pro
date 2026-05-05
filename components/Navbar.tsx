@@ -14,7 +14,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Mounted check to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
     const handleClickOutside = (event: MouseEvent) => {
@@ -36,7 +35,7 @@ export default function Navbar() {
   const linkStyle = (path: string) => {
     const isActive = pathname === path;
     return `text-sm font-medium transition-all relative py-2 ${
-      isActive ? "text-blue-600" : "text-slate-600 dark:text-slate-400 hover:text-blue-600"
+      isActive ? "text-purple-600" : "text-slate-600 dark:text-slate-400 hover:text-purple-600"
     }`;
   };
 
@@ -44,7 +43,7 @@ export default function Navbar() {
     const slug = text.toLowerCase().replace(/\s+/g, '-').replace('calc', 'calculator');
     if (slug === "ai-math-solver") return "/ai-math-solver";
     if (slug === "ai-chat") return "/ai-chat";
-    return `/tool/${slug}`; 
+    return `/tool/${slug}`;
   };
 
   const toolCategories = [
@@ -75,14 +74,14 @@ export default function Navbar() {
           <div className="w-full max-w-2xl mx-4 bg-white dark:bg-[#0f172a] rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-white/10 animate-in zoom-in-95 duration-200">
             <div className="flex items-center p-4 gap-3 border-b border-slate-100 dark:border-white/5">
               <span className="material-symbols-outlined text-slate-400">search</span>
-              <input 
+              <input
                 autoFocus
-                placeholder="Search for any tool..." 
+                placeholder="Search for any tool..."
                 className="flex-1 bg-transparent border-none outline-none text-lg text-slate-900 dark:text-white"
               />
               <button onClick={() => setIsSearchOpen(false)} className="text-xs font-bold text-slate-400 hover:text-red-500 uppercase">Esc</button>
             </div>
-            <div className="p-4 text-xs text-slate-400">Try searching for "BMI Calculator" or "AI Math Solver"</div>
+            <div className="p-4 text-xs text-slate-400">Try searching for &quot;BMI Calculator&quot; or &quot;AI Math Solver&quot;</div>
           </div>
         </div>
       )}
@@ -134,7 +133,7 @@ export default function Navbar() {
                   Toggle theme
                 </button>
                 <Link href="/sign-in" className="block w-full">
-                  <button className="w-full min-h-[44px] rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors active:scale-[0.99]">
+                  <button className="w-full min-h-[44px] rounded-xl bg-gradient-to-r from-[#A855F7] to-[#9333EA] hover:opacity-90 text-white font-semibold transition-all active:scale-[0.99]">
                     Sign In
                   </button>
                 </Link>
@@ -147,16 +146,16 @@ export default function Navbar() {
       <nav className="sticky top-0 w-full z-50 border-b border-slate-200/50 dark:border-white/5 transition-colors">
 
         <div className="flex justify-between items-center h-16 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto" ref={dropdownRef}>
-          
+
           <div className="flex items-center gap-10">
             <Link href="/" className="text-xl font-bold text-slate-900 dark:text-white tracking-tighter">
               UtilityPro
             </Link>
-            
+
             <div className="hidden lg:flex gap-8 items-center">
               <Link className={linkStyle("/")} href="/">Home</Link>
               <Link className={linkStyle("/ai-chat")} href="/ai-chat">AI Chat</Link>
-              
+
               <div className="relative group">
                 <Link className={linkStyle("/ai-math-solver")} href="/ai-math-solver">
                   AI Math Solver
@@ -168,9 +167,9 @@ export default function Navbar() {
 
               {/* Tools Dropdown */}
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setActiveDropdown(activeDropdown === 'tools' ? null : 'tools')}
-                  className={`text-sm font-medium flex items-center gap-1 transition-colors ${activeDropdown === 'tools' ? 'text-blue-600' : 'text-slate-600 dark:text-slate-400'}`}
+                  className={`text-sm font-medium flex items-center gap-1 transition-colors ${activeDropdown === 'tools' ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400 hover:text-purple-600'}`}
                 >
                   Tools <span className={`material-symbols-outlined text-xs transition-transform duration-300 ${activeDropdown === 'tools' ? 'rotate-180' : ''}`}>expand_more</span>
                 </button>
@@ -179,16 +178,16 @@ export default function Navbar() {
                     {toolCategories.map((cat, i) => (
                       <div key={i} className="space-y-3">
                         <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 flex items-center gap-2">
-                          <span className="material-symbols-outlined text-[16px] text-blue-500">{cat.icon}</span>
+                          <span className="material-symbols-outlined text-[16px] text-purple-500">{cat.icon}</span>
                           {cat.title}
                         </p>
                         <ul className="space-y-2">
                           {cat.links.map((l, j) => (
                             <li key={j}>
-                              <Link 
+                              <Link
                                 href={slugify(l)}
                                 onClick={() => setActiveDropdown(null)}
-                                className="text-xs text-slate-600 dark:text-slate-400 hover:text-blue-600 cursor-pointer transition-colors"
+                                className="text-xs text-slate-600 dark:text-slate-400 hover:text-purple-600 cursor-pointer transition-colors"
                               >
                                 {l}
                               </Link>
@@ -203,9 +202,9 @@ export default function Navbar() {
 
               {/* Category Dropdown */}
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setActiveDropdown(activeDropdown === 'cat' ? null : 'cat')}
-                  className={`text-sm font-medium flex items-center gap-1 transition-colors ${activeDropdown === 'cat' ? 'text-blue-600' : 'text-slate-600 dark:text-slate-400'}`}
+                  className={`text-sm font-medium flex items-center gap-1 transition-colors ${activeDropdown === 'cat' ? 'text-purple-600' : 'text-slate-600 dark:text-slate-400 hover:text-purple-600'}`}
                 >
                   Category <span className={`material-symbols-outlined text-xs transition-transform duration-300 ${activeDropdown === 'cat' ? 'rotate-180' : ''}`}>expand_more</span>
                 </button>
@@ -213,7 +212,7 @@ export default function Navbar() {
                   <div className="absolute top-12 left-0 w-64 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-xl shadow-2xl py-2 animate-in slide-in-from-top-2 fade-in duration-200">
                     {categoryList.map((item, idx) => (
                       <button key={idx} className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300 transition-colors group">
-                        <span className="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-blue-500">{item.icon}</span>
+                        <span className="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-purple-500">{item.icon}</span>
                         <span className="text-sm font-medium">{item.name}</span>
                       </button>
                     ))}
@@ -224,12 +223,12 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button onClick={() => setIsSearchOpen(true)} className="p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+            <button onClick={() => setIsSearchOpen(true)} className="p-2 text-slate-600 dark:text-slate-400 hover:text-purple-600 transition-colors">
               <span className="material-symbols-outlined text-[22px]">search</span>
             </button>
 
-            <Link 
-              href="/pricing-page" 
+            <Link
+              href="/pricing-page"
               className={`${linkStyle("/pricing-page")} hidden md:block px-2`}
             >
               Pricing
@@ -237,24 +236,24 @@ export default function Navbar() {
 
             {/* Language Dropdown */}
             <div className="relative hidden md:block">
-              <button 
+              <button
                 onClick={() => setActiveDropdown(activeDropdown === 'lang' ? null : 'lang')}
-                className="flex items-center gap-1 text-[13px] font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-white/5 px-3 py-1.5 rounded-lg hover:bg-slate-200 transition-all"
+                className="flex items-center gap-1 text-[13px] font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-white/5 px-3 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10 transition-all"
               >
                 EN <span className="material-symbols-outlined text-[16px]">expand_more</span>
               </button>
               {activeDropdown === 'lang' && (
                 <div className="absolute top-10 right-0 w-48 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-xl shadow-2xl p-2 grid grid-cols-3 gap-1 animate-in fade-in duration-150">
                   {languages.map((l) => (
-                    <button key={l} className="text-[11px] font-bold py-2 hover:bg-blue-500 hover:text-white rounded-md transition-colors">{l}</button>
+                    <button key={l} className="text-[11px] font-bold py-2 hover:bg-purple-500 hover:text-white rounded-md transition-colors">{l}</button>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Theme Toggle - BUILT FOR RELIABILITY */}
-            <button 
-              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} 
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
               className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-slate-600 dark:text-slate-400"
               aria-label="Toggle Dark Mode"
             >
@@ -264,7 +263,7 @@ export default function Navbar() {
             </button>
 
             <Link href="/sign-in" className="hidden md:block">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-6 py-2.5 rounded-full transition-all shadow-lg shadow-blue-600/20 active:scale-95">
+              <button className="bg-gradient-to-r from-[#A855F7] to-[#9333EA] hover:opacity-90 text-white text-xs font-bold px-6 py-2.5 rounded-full transition-all shadow-lg shadow-purple-500/25 active:scale-95">
                 Sign In
               </button>
             </Link>
